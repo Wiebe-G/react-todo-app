@@ -1,9 +1,9 @@
+import TodoList from "./ToDoList.tsx";
+
 function App() {
 	return (
 	<>
-		<div className="">
-			Hi
-		</div>
+		<TodoList />
 	</>
 	)
 }
