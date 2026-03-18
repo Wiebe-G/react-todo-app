@@ -2,7 +2,10 @@ import {useState} from "react";
 
 function TodoList() {
 
-	const [tasks, setTasks] = useState(["Test", "Test2", "Test 3"]);
+	type Task = {
+		task: string;
+	}
+	const [tasks, setTasks] = useState<Task[]>([]);
 	const [newTask, setNewTask] = useState("");
 
 
@@ -11,29 +14,41 @@ function TodoList() {
 	}
 
 	function addTask() {
-		if(newTask.trim().length > 0){
-			setTasks(t => [...t, newTask]);
+		if (newTask.trim().length > 0) {
+			setTasks(t => [...t, {task: newTask}]);
 			setNewTask("");
 		}
 	}
 
 	function deleteTask(index: number) {
 
+		const updatedTasks = tasks.filter((_, i) => i !== index);
+		setTasks(updatedTasks);
 	}
 
 	function moveTaskUp(index: number) {
-
+		if (index > 0) {
+			const updatedTasks = [...tasks];
+			[updatedTasks[index], updatedTasks[index - 1]] = [updatedTasks[index - 1], updatedTasks[index]];
+			setTasks(updatedTasks);
+		}
 	}
 
 	function moveTaskDown(index: number) {
-
+		if (index < tasks.length - 1) {
+			const updatedTasks = [...tasks];
+			[updatedTasks[index], updatedTasks[index + 1]] =
+				[updatedTasks[index + 1], updatedTasks[index]];
+			setTasks(updatedTasks);
+		}
 	}
 
 	return (
 		<>
 			<div className="flex flex-col justify-center items-center bg-indigo-400 h-screen text-gray-200">
 				<h1 className="font-bold text-2xl">To-Do list</h1>
-				<div className="flex flex-col justify-center items-center max-h-fit min-h-1/2 border-2 border-black w-1/2 gap-4">
+				<div
+					className="flex flex-col justify-center items-center max-h-fit min-h-1/2 border-2 border-black w-1/2 gap-4">
 
 					<div className="">
 						<input
@@ -47,10 +62,10 @@ function TodoList() {
 					</div>
 
 					<ol className="">
-						{tasks.map((task, index: number) =>
+						{tasks.map((t, index: number) =>
 							<li key={index}
 								className="grid grid-cols-4 gap-4 m-2 border-2 border-black">
-								<span className="bg-base-200 text-black">{task}</span>
+								<span className="bg-base-200 text-black">{t.task}</span>
 								<button
 									onClick={() => deleteTask(index)}
 									className="bg-red-500 btn btn-primary border-2">
